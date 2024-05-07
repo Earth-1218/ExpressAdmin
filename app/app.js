@@ -6,6 +6,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var protectedRouter = require('./routes/protected');
+var authRouter = require('./routes/auth');
 var sequelize = require('./sequelize');
 var app = express();
 
@@ -20,8 +22,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
-// Other code remains unchanged...
+// Mount authentication routes
+app.use('/api/auth', authRouter);
+
+// Mount protected routes
+app.use('/api/protected', protectedRouter);
 
 module.exports = app;
