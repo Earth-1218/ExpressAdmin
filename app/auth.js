@@ -1,8 +1,8 @@
 // auth.js
-
+var path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { User } = require('./models/user'); // Import your User model
+const { User } = require('./models/user');
 
 const generateToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });

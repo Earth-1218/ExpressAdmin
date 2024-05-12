@@ -1,0 +1,8 @@
+DB_DIALECT=mysql
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=
+DB_DATABASE=express_demo
+DB_PORT=3306
+JWT_SECRET=j4Qm7#FpZ*t@9sG!vP$d
+

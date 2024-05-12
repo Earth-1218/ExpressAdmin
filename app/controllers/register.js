@@ -1,39 +1,31 @@
+var path = require('path');
 const express = require('express');
 const router = express.Router();
-const { User } = require('../models/user');
-const { generateToken } = require('../auth');
-const bcrypt = require('bcryptjs');
+const { User, sequelize } = require('../models/user');
+const { generateToken, hashPassword } = require('../auth');
 
 router.post('/', (req, res) => {
-  try {
-    User.findOne({ where: { email: req.body.email } })
-      .then(user => {
-        if (user !== null) {
-          return res.status(400).json({ 'status': false, error: 'Email already exists' });
-        } else {
-          const newUser = new User({
-            username: req.body.username,
-            email: req.body.email,
-            password: req.body.password
-          });
-          bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(newUser.password, salt, (err, hash) => {
-              if (err) throw err;
-              newUser.password = hash;
-              newUser.save()
-                .then(user => {
-                  const token = generateToken({ id: user.id, email: user.email });
-                  res.json({ 'api_token': token });
-                })
-                .catch(err => res.status(500).json({'status': false, 'error': 'Error in signup' }));
-            });
-          });
-        }
-      })
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({'status': false, 'error': 'Error in signup.' });
-  }
+  sequelize.sync().then(() => {
+    hashPassword(req.body.password).then(hashedPassword => {
+      User.create({
+        username: req.body.username,
+        email: req.body.email,
+        password: hashedPassword
+      }).then(user => {
+        const token = generateToken({ id: user.id, email: user.email });
+        res.json({ 'api_token': token });
+      }).catch(error => {
+        console.error('Failed to create a new record:', error);
+        res.status(500).json({ 'status': false, 'error': 'Failed to create user' });
+      });
+    }).catch(error => {
+      console.error('Unable to create table:', error);
+      res.status(500).json({ 'status': false, 'error': 'Failed to create user' });
+    });
+  }).catch(error => {
+    console.error('Unable to create table:', error);
+    res.status(500).json({ 'status': false, 'error': 'Unable to create table' });
+  });
 });
 
 module.exports = router;
