@@ -19,12 +19,12 @@ router.post('/', (req, res) => {
         res.status(500).json({ 'status': false, 'error': 'Failed to create user' });
       });
     }).catch(error => {
-      console.error('Unable to create table:', error);
+      console.error('Failed to create user:', error);
       res.status(500).json({ 'status': false, 'error': 'Failed to create user' });
     });
   }).catch(error => {
-    console.error('Unable to create table:', error);
-    res.status(500).json({ 'status': false, 'error': 'Unable to create table' });
+    console.error('Failed to create user:', error);
+    res.status(500).json({ 'status': false, 'error': 'Failed to create user' });
   });
 });
 

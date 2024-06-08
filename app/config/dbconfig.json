@@ -1,0 +1,10 @@
+{
+    "database": "express_demo",
+    "username": "root",
+    "password": "your_database_password",
+    "options": {
+        "host": "localhost",
+        "port": 3306,
+        "dialect": "mysql"
+    }
+}
